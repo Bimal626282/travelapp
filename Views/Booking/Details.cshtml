@@ -1,0 +1,122 @@
+﻿@model TravelApp.Models.TourPackage
+
+@{
+    ViewData["Title"] = Model.Title + " - Details";
+}
+
+<div class="container mt-5 mb-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <img src="@Model.ImageUrl" class="card-img-top" alt="@Model.Title" style="height: 400px; object-fit: cover;">
+                }
+                else
+                {
+                    <div class="bg-light text-center py-5" style="height: 400px;">
+                        <i class="bi bi-image text-muted" style="font-size: 5rem;"></i>
+                        <p class="text-muted">No Image Available</p>
+                    </div>
+                }
+
+                <div class="card-body p-4 p-md-5">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h1 class="fw-bold text-primary mb-0">@Model.Title</h1>
+                        <span class="badge bg-success rounded-pill px-4 py-2 fs-5 shadow-sm">$@Model.Price</span>
+                    </div>
+
+                    <div class="d-flex gap-3 mb-4 text-muted">
+                        <span><i class="bi bi-geo-alt-fill text-danger"></i> @Model.Destination, @Model.Location</span>
+                        <span><i class="bi bi-clock-history text-info"></i> @Model.DurationDays Days</span>
+                    </div>
+
+                    <h5 class="fw-bold border-bottom pb-2">Tour Description</h5>
+                    <p class="text-secondary fs-5" style="line-height: 1.7;">
+                        @Model.Description
+                    </p>
+
+                    <div class="alert alert-info border-0 rounded-4 d-flex align-items-center mt-4">
+                        <i class="bi bi-info-circle-fill fs-3 me-3"></i>
+                        <div>
+                            <strong>Agency:</strong> @(string.IsNullOrEmpty(Model.AgencyName) ? "Global Travels" : Model.AgencyName)
+                        </div>
+                    </div>
+
+                    <div class="mt-5 d-flex gap-3">
+                        @* ONLY SHOW BOOKING TO NON-AGENCY USERS *@
+                        @if (!User.IsInRole("Agency"))
+                        {
+                            <a asp-action="Create"
+                               asp-route-destination="@Model.Destination"
+                               asp-route-price="@Model.Price"
+                               asp-route-duration="@Model.DurationDays"
+                               class="btn btn-primary btn-lg rounded-pill px-5 fw-bold shadow">
+                                Book This Tour
+                            </a>
+                        }
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary btn-lg rounded-pill px-4">
+                            Back to Tours
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <h3 class="fw-bold mb-4">Traveler Feedback</h3>
+
+            <div class="feedback-container" style="max-height: 800px; overflow-y: auto;">
+                @if (Model.Feedbacks != null && Model.Feedbacks.Any())
+                {
+                    @foreach (var feedback in Model.Feedbacks.OrderByDescending(f => f.Id))
+                    {
+                        <div class="card border-0 shadow-sm rounded-4 mb-3">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="fw-bold mb-0">@feedback.TouristName</h6>
+                                    <div class="text-warning">
+                                        @for (int i = 0; i < feedback.Rating; i++)
+                                        {
+                                            <i class="bi bi-star-fill small"></i>
+                                        }
+                                    </div>
+                                </div>
+                                <p class="text-muted small mb-0 fst-italic">"@feedback.Comment"</p>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="card border-0 shadow-sm rounded-4 p-4 text-center bg-light">
+                        <i class="bi bi-chat-left-dots text-muted fs-1 mb-2"></i>
+                        <p class="text-muted mb-0">No reviews yet for this destination.</p>
+                    </div>
+                }
+            </div>
+
+            @* ONLY SHOW REVIEW SECTION TO NON-AGENCY USERS *@
+            @if (!User.IsInRole("Agency"))
+            {
+                <div class="mt-4 p-4 bg-white rounded-4 shadow-sm border">
+                    <h6 class="fw-bold mb-2">Share your experience?</h6>
+
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <p class="small text-muted mb-3">Logged in as @User.Identity.Name. Share your thoughts!</p>
+                        <a asp-controller="Feedback"
+                           asp-action="Create"
+                           asp-route-tourId="@Model.Id"
+                           class="btn btn-primary rounded-pill w-100">Write a Review</a>
+                    }
+                    else
+                    {
+                        <p class="small text-muted mb-3">Login to your account to leave a review for @Model.Title.</p>
+                        <a asp-controller="Account" asp-action="Login" class="btn btn-outline-primary rounded-pill w-100">Login to Review</a>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>

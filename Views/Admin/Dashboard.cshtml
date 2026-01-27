@@ -1,0 +1,211 @@
+﻿@model IEnumerable<TravelApp.Models.Booking>
+
+@{
+    ViewData["Title"] = "Agency Dashboard";
+}
+
+<div class="container mt-5">
+    @* --- Header --- *@
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="fw-bold text-dark">Welcome, Agency Partner</h1>
+            <p class="text-muted">Manage tour packages, confirm bookings, and monitor traveler feedback.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a asp-action="BookingReport" class="btn btn-outline-primary rounded-pill px-4 shadow-sm">
+                <i class="bi bi-graph-up"></i> View Reports
+            </a>
+            <span class="badge bg-danger rounded-pill px-3 py-2 shadow-sm d-flex align-items-center">Agency Access Verified</span>
+        </div>
+    </div>
+
+    @* --- Statistics Cards --- *@
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm rounded-4 bg-primary text-white p-3 h-100">
+                <small class="text-uppercase opacity-75">Total Bookings</small>
+                <h3 class="fw-bold mb-0">@ViewBag.TotalBookings</h3>
+                <i class="bi bi-calendar-check position-absolute bottom-0 end-0 m-2 opacity-25 fs-1"></i>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm rounded-4 bg-warning text-dark p-3 h-100">
+                <small class="text-uppercase opacity-75">Pending Confirmation</small>
+                <h3 class="fw-bold mb-0">@ViewBag.PendingBookings</h3>
+                <i class="bi bi-clock-history position-absolute bottom-0 end-0 m-2 opacity-25 fs-1"></i>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm rounded-4 bg-success text-white p-3 h-100">
+                <small class="text-uppercase opacity-75">Confirmed Trips</small>
+                <h3 class="fw-bold mb-0">@ViewBag.ConfirmedBookings</h3>
+                <i class="bi bi-check-circle position-absolute bottom-0 end-0 m-2 opacity-25 fs-1"></i>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm rounded-4 bg-info text-white p-3 h-100">
+                <small class="text-uppercase opacity-75">Total Travelers</small>
+                <h3 class="fw-bold mb-0">@ViewBag.TotalTravelers</h3>
+                <i class="bi bi-people-fill position-absolute bottom-0 end-0 m-2 opacity-25 fs-1"></i>
+            </div>
+        </div>
+    </div>
+
+    @* --- Tour Package Management Section --- *@
+    <div class="card shadow-sm border-0 rounded-4 overflow-hidden mb-5">
+        <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 fw-bold text-primary">Tour Package Inventory</h5>
+            <a asp-action="Create" class="btn btn-primary btn-sm rounded-pill px-3">
+                <i class="bi bi-plus-lg"></i> Create New Package
+            </a>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th class="ps-4">Tour Title</th>
+                        <th>Price</th>
+                        <th>Duration</th>
+                        <th>Status</th>
+                        <th class="text-center">Manage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var tour in (IEnumerable<TravelApp.Models.TourPackage>)ViewBag.AllTours)
+                    {
+                        <tr class="@(!tour.IsActive ? "table-light opacity-75" : "")">
+                            <td class="ps-4">
+                                <span class="fw-bold">@tour.Title</span><br />
+                                <small class="text-muted">@tour.Location</small>
+                            </td>
+                            <td>@tour.Price.ToString("C")</td>
+                            <td>@tour.DurationDays Days</td>
+                            <td>
+                                @if (tour.IsActive)
+                                {
+                                    <span class="badge bg-success-subtle text-success rounded-pill px-3">Active</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary-subtle text-secondary rounded-pill px-3">Hidden</span>
+                                }
+                            </td>
+                            <td class="text-center">
+                                <div class="d-flex justify-content-center gap-2">
+                                    <a asp-action="Edit" asp-route-id="@tour.Id" class="btn btn-sm btn-outline-primary rounded-pill px-3">Edit</a>
+
+                                    <form asp-action="ToggleStatus" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@tour.Id" />
+                                        <button type="submit" class="btn btn-sm @(tour.IsActive ? "btn-outline-danger" : "btn-outline-success") rounded-pill px-3">
+                                            @(tour.IsActive ? "Delete" : "Restore")
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        @* --- Recent Booking Activity --- *@
+        <div class="col-lg-8 mb-4">
+            <div class="card shadow-sm border-0 rounded-4 overflow-hidden h-100">
+                <div class="card-header bg-white py-3 border-bottom">
+                    <h5 class="mb-0 fw-bold">Recent Booking Activity</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="ps-4">Destination</th>
+                                <th>Date</th>
+                                <th>Guests</th>
+                                <th>Status</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="ps-4 fw-bold text-dark">@item.DestinationName</td>
+                                    <td>@item.BookingDate.ToShortDateString()</td>
+                                    <td>@item.NumberOfTravelers</td>
+                                    <td>
+                                        @if (item.IsConfirmed)
+                                        {
+                                            <span class="badge bg-success-subtle text-success rounded-pill px-3">Confirmed</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-warning-subtle text-warning rounded-pill px-3 text-dark">Pending</span>
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        @if (!item.IsConfirmed)
+                                        {
+                                            <form asp-action="ConfirmBooking" method="post">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="id" value="@item.Id" />
+                                                <button type="submit" class="btn btn-sm btn-success rounded-pill px-4">Confirm</button>
+                                            </form>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted small"><i class="bi bi-check-circle-fill"></i> Processed</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        @* --- Feedback Management --- *@
+        <div class="col-lg-4">
+            <div class="card shadow-sm border-0 rounded-4 mb-4">
+                <div class="card-header bg-white py-3 border-bottom">
+                    <h5 class="mb-0 fw-bold">Latest Tourist Feedback</h5>
+                </div>
+                <div class="card-body">
+                    @if (ViewBag.RecentFeedback == null || !((IEnumerable<TravelApp.Models.Feedback>)ViewBag.RecentFeedback).Any())
+                    {
+                        <p class="text-muted text-center py-4">No feedback received yet.</p>
+                    }
+                    else
+                    {
+                        @foreach (var f in (IEnumerable<TravelApp.Models.Feedback>)ViewBag.RecentFeedback)
+                        {
+                            <div class="mb-3 border-bottom pb-2">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="fw-bold text-primary small">@f.TouristName</span>
+                                    <span class="text-warning small">
+                                        @for (int i = 0; i < f.Rating; i++)
+                                        {
+                                            <i class="bi bi-star-fill"></i>
+                                        }
+                                    </span>
+                                </div>
+                                <p class="small mb-1 text-dark">"@f.Comment"</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted" style="font-size: 0.7rem;">Tour: @(f.TourPackage?.Title ?? "Unknown")</small>
+                                    <form asp-action="DeleteFeedback" method="post" onsubmit="return confirm('Delete this review?');">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@f.Id" />
+                                        <button type="submit" class="btn btn-link text-danger p-0 small" style="font-size: 0.7rem; text-decoration: none;">Delete Review</button>
+                                    </form>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

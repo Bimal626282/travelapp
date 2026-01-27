@@ -1,0 +1,41 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model IdentityUser
+
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+                <div class="card-header bg-primary text-white text-center py-4">
+                    <div class="rounded-circle bg-white text-primary d-inline-flex align-items-center justify-content-center mb-2" style="width: 80px; height: 80px;">
+                        <i class="fs-1 fw-bold">@Model.Email.Substring(0, 1).ToUpper()</i>
+                    </div>
+                    <h3 class="fw-bold mb-0">User Profile</h3>
+                </div>
+                <div class="card-body p-4">
+                    <div class="mb-3">
+                        <label class="small text-muted text-uppercase fw-bold">Username</label>
+                        <p class="fs-5">@Model.UserName</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="small text-muted text-uppercase fw-bold">Email Address</label>
+                        <p class="fs-5">@Model.Email</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="small text-muted text-uppercase fw-bold">Account ID</label>
+                        <p class="small text-secondary">@Model.Id</p>
+                    </div>
+
+                    <hr />
+
+                    <div class="d-grid">
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-primary rounded-pill">Back to Dashboard</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

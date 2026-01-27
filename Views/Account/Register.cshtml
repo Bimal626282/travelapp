@@ -1,0 +1,44 @@
+﻿@model dynamic
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card border-0 shadow-lg rounded-4">
+                <div class="card-body p-5">
+                    <h2 class="text-center fw-bold text-primary mb-4">Create Account</h2>
+
+                    <form asp-action="Register" method="post">
+                        @Html.AntiForgeryToken()
+                        <div asp-validation-summary="All" class="text-danger small mb-3"></div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Email Address</label>
+                            <input type="email" name="email" class="form-control rounded-pill" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Password</label>
+                            <input type="password" name="password" class="form-control rounded-pill" required />
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Confirm Password</label>
+                            <input type="password" name="confirmPassword" class="form-control rounded-pill" required />
+                        </div>
+
+                        <div class="mb-4 p-3 bg-light rounded-4 border border-info">
+                            <label class="form-label fw-bold text-info">Agency Secret Key</label>
+                            <input type="password" name="adminKey" class="form-control rounded-pill" placeholder="Leave blank for Tourist" />
+                            <small class="text-muted">Enter <strong>KOI2026</strong> for Agency access.</small>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 rounded-pill py-2 fw-bold">Register Account</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

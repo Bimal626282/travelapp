@@ -1,0 +1,53 @@
+﻿@model TravelApp.Models.Feedback
+
+@{
+    ViewData["Title"] = "Write a Review";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-lg rounded-4">
+                <div class="card-body p-5">
+                    <h2 class="fw-bold text-primary mb-4">Leave a Review</h2>
+
+                    <form asp-controller="Feedback" asp-action="Create" method="post">
+                        @Html.AntiForgeryToken()
+
+                        @* Hidden field to link the feedback to the specific tour *@
+                        <input type="hidden" asp-for="TourPackageId" />
+
+                        <div class="mb-3">
+                            <label asp-for="Rating" class="form-label fw-bold">Rating (1-5)</label>
+                            <select asp-for="Rating" class="form-select rounded-pill">
+                                <option value="5">5 - Excellent</option>
+                                <option value="4">4 - Very Good</option>
+                                <option value="3">3 - Average</option>
+                                <option value="2">2 - Poor</option>
+                                <option value="1">1 - Terrible</option>
+                            </select>
+                            <span asp-validation-for="Rating" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Comment" class="form-label fw-bold">Your Experience</label>
+                            <textarea asp-for="Comment" class="form-control rounded-4" rows="4" placeholder="How was your trip?"></textarea>
+                            <span asp-validation-for="Comment" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg rounded-pill fw-bold">Submit Review</button>
+                            <a asp-controller="Booking" asp-action="Details" asp-route-id="@Model.TourPackageId" class="btn btn-light rounded-pill">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

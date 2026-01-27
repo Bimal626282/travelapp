@@ -1,0 +1,76 @@
+﻿@model IEnumerable<TravelApp.Models.BookingReportViewModel>
+
+@{
+    ViewData["Title"] = "Business Analytics Report";
+}
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-primary"><i class="bi bi-bar-chart-fill"></i> Agency Insights</h2>
+            <p class="text-muted">Tracking tour performance and revenue based on your database records.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a asp-action="Dashboard" class="btn btn-light rounded-pill px-4 border">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </a>
+            <button onclick="window.print()" class="btn btn-outline-dark rounded-pill">
+                <i class="bi bi-printer"></i> Print PDF
+            </button>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="bg-dark text-white">
+                <tr>
+                    <th class="ps-4">Tour Package</th>
+                    <th>Total Bookings</th>
+                    <th>Total Travelers</th>
+                    <th>Popularity Score</th>
+                    <th class="text-end pe-4">Estimated Revenue</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="ps-4 fw-bold">@item.Destination</td>
+                            <td>@item.TotalBookings</td>
+                            <td>@item.TotalTravelers Guests</td>
+                            <td style="width: 200px;">
+                                @{
+                                    // Visualizing popularity based on traveler count
+                                    var progress = Math.Min(item.TotalTravelers * 5, 100);
+                                }
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar bg-info rounded-pill" style="width: @progress%"></div>
+                                </div>
+                            </td>
+                            <td class="text-end pe-4 fw-bold text-success">
+                                $@item.TotalRevenue.ToString("N2")
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5" class="text-center py-5 text-muted">No booking data available to generate report.</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot class="bg-light fw-bold">
+                <tr>
+                    <td class="ps-4">Grand Totals</td>
+                    <td>@Model?.Sum(m => m.TotalBookings)</td>
+                    <td>@Model?.Sum(m => m.TotalTravelers)</td>
+                    <td></td>
+                    <td class="text-end pe-4 text-primary">$@Model?.Sum(m => m.TotalRevenue).ToString("N2")</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>

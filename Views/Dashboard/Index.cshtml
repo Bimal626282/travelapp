@@ -1,0 +1,23 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<h2>Dashboard</h2>
+
+<p>
+    Welcome, <strong>@User.Identity?.Name</strong>
+</p>
+
+@if (User.IsInRole("Tourist"))
+{
+    <p>You are logged in as a <strong>Tourist</strong>.</p>
+}
+
+@if (User.IsInRole("Agency"))
+{
+    <p>You are logged in as an <strong>Agency</strong>.</p>
+}
+
+<p>
+    This page is only accessible to logged-in users.
+</p>

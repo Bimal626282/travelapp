@@ -1,0 +1,70 @@
+﻿@model IEnumerable<TravelApp.Models.Booking>
+
+@{
+    ViewData["Title"] = "My Bookings";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-airplane-engines"></i> My Trip Bookings</h1>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Book a New Trip</a>
+    </div>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-info shadow-sm">
+            <h4 class="alert-heading">No bookings found!</h4>
+            <p>It looks like you haven't planned any adventures yet. Browse our packages and start your journey!</p>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive shadow-sm rounded">
+            <table class="table table-hover align-middle bg-white">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Destination</th>
+                        <th>Date</th>
+                        <th>Travelers</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <strong>@item.DestinationName</strong>
+                            </td>
+                            <td>@item.BookingDate.ToShortDateString()</td>
+                            <td>@item.NumberOfTravelers</td>
+                            <td>
+                                <span class="badge @(item.IsConfirmed ? "bg-success" : "bg-warning text-dark")">
+                                    @(item.IsConfirmed ? "Confirmed" : "Pending")
+                                </span>
+                            </td>
+                            <td>
+                                @* This form allows the 'Cancel' button to actually delete from the DB *@
+                                <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display:inline;">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger"
+                                            onclick="return confirm('Are you sure you want to cancel this booking?')">
+                                        Cancel
+                                    </button>
+                                </form>
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info">Details</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+                
+            </table>
+        </div>
+    }
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,62 @@
+﻿@model TravelApp.Models.Booking
+
+@{
+    ViewData["Title"] = "Plan a New Trip";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 border p-4 shadow-sm rounded-4 bg-white">
+            <h2 class="text-center mb-4 text-primary fw-bold">Plan a New Trip</h2>
+
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="DestinationName" class="form-label fw-bold">Destination</label>
+                    <input asp-for="DestinationName" class="form-control"
+                           value="@ViewBag.Destination" placeholder="e.g. Kathmandu" />
+                    <span asp-validation-for="DestinationName" class="text-danger"></span>
+                </div>
+
+                @if (ViewBag.Price != null)
+                {
+                    <div class="row mb-3 p-2 bg-light rounded-3 mx-0">
+                        <div class="col">
+                            <small class="text-muted d-block">Estimated Price</small>
+                            <span class="fw-bold text-success">@ViewBag.Price.ToString("C")</span>
+                        </div>
+                        <div class="col border-start">
+                            <small class="text-muted d-block">Trip Duration</small>
+                            <span class="fw-bold">@ViewBag.Duration Day(s)</span>
+                        </div>
+                    </div>
+                }
+
+                <div class="form-group mb-3">
+                    <label asp-for="BookingDate" class="form-label fw-bold">Travel Date</label>
+                    <input asp-for="BookingDate" type="date" class="form-control" />
+                    <span asp-validation-for="BookingDate" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label asp-for="NumberOfTravelers" class="form-label fw-bold">Number of Travelers</label>
+                    <input asp-for="NumberOfTravelers" type="number" class="form-control" min="1" placeholder="How many people?" />
+                    <span asp-validation-for="NumberOfTravelers" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 fw-bold py-2 shadow-sm rounded-pill">Save Trip</button>
+
+                <div class="text-center mt-3">
+                    <a asp-action="Index" asp-controller="Home" class="text-muted small text-decoration-none">Cancel and Return Home</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
