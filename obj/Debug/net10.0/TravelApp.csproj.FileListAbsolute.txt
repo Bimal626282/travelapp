@@ -154,6 +154,7 @@ C:\Users\grbim\source\repos\TravelApp\TravelApp\obj\Debug\net10.0\TravelApp.MvcA
 C:\Users\grbim\source\repos\TravelApp\TravelApp\obj\Debug\net10.0\TravelApp.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\grbim\source\repos\TravelApp\TravelApp\obj\Debug\net10.0\TravelApp.RazorAssemblyInfo.cache
 C:\Users\grbim\source\repos\TravelApp\TravelApp\obj\Debug\net10.0\TravelApp.RazorAssemblyInfo.cs
+C:\Users\grbim\source\repos\TravelApp\TravelApp\obj\Debug\net10.0\TravelApp.sourcelink.json
 C:\Users\grbim\source\repos\TravelApp\TravelApp\obj\Debug\net10.0\rjimswa.dswa.cache.json
 C:\Users\grbim\source\repos\TravelApp\TravelApp\obj\Debug\net10.0\rjsmrazor.dswa.cache.json
 C:\Users\grbim\source\repos\TravelApp\TravelApp\obj\Debug\net10.0\rjsmcshtml.dswa.cache.json
